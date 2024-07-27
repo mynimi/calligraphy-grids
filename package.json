@@ -19,11 +19,16 @@
     "type": "git",
     "url": "git+ssh://git@github.com/mynimi/calligraphy-grids.git"
   },
+  "publishConfig": {
+    "provenance": true
+  },
   "scripts": {
     "lint": "eslint src --ext .ts",
     "format": "prettier --write src/**/*.ts",
     "check": "npm run lint && tsc --noEmit",
-    "build": "tsup src/*.ts --format cjs,esm --dts"
+    "build": "tsup src/*.ts --format cjs,esm --dts",
+    "prepublishOnly": "npm run check && npm run build",
+    "semantic-release": "semantic-release"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
