@@ -8,7 +8,7 @@
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "module": "dist/index.esm.js",
+  "module": "dist/index.js",
   "exports": {
     ".": {
       "import": "./dist/index.esm.js",
@@ -32,7 +32,7 @@
     "lint": "eslint src --ext .ts",
     "format": "prettier --write src/**/*.ts",
     "check": "npm run lint && tsc --noEmit",
-    "build": "tsup src/*.ts --format cjs,esm --dts",
+    "build": "tsc",
     "prepublishOnly": "npm run check && npm run build",
     "semantic-release": "semantic-release"
   },
