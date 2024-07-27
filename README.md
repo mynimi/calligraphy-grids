@@ -5,3 +5,8 @@ Classes to create Calligraphy Grids.
 it with a form and PDF Export, as well as a quick print style.
 
 ## How to use
+### Install
+
+```bash
+npm i --D calligraphy-grids
+```
