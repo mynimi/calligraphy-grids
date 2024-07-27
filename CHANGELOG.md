@@ -1,3 +1,10 @@
+## [0.0.13](https://github.com/mynimi/calligraphy-grids/compare/v0.0.12...v0.0.13) (2024-07-27)
+
+
+### Bug Fixes
+
+* **exports:** add missing exports ([4498478](https://github.com/mynimi/calligraphy-grids/commit/44984789307822c7ec4c1f502486bb77b4f0216e))
+
 ## [0.0.12](https://github.com/mynimi/calligraphy-grids/compare/v0.0.11...v0.0.12) (2024-07-27)
 
 
