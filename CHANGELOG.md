@@ -1,3 +1,10 @@
+## [0.0.9](https://github.com/mynimi/calligraphy-grids/compare/v0.0.8...v0.0.9) (2024-07-27)
+
+
+### Bug Fixes
+
+* **ci:** hope bot starts updating package.json ([5f08e53](https://github.com/mynimi/calligraphy-grids/commit/5f08e538b3052b7b0f67e01ab651627d57442c91))
+
 ## [0.0.8](https://github.com/mynimi/calligraphy-grids/compare/v0.0.7...v0.0.8) (2024-07-27)
 
 
