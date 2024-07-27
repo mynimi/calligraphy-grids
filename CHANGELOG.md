@@ -1,3 +1,10 @@
+# [0.1.0](https://github.com/mynimi/calligraphy-grids/compare/v0.0.16...v0.1.0) (2024-07-27)
+
+
+### Features
+
+* **ci:** we are now functional in different products and there is a readme ([ff6a7d4](https://github.com/mynimi/calligraphy-grids/commit/ff6a7d427b7cd195ca74f46880791d98f9550d21))
+
 ## [0.0.16](https://github.com/mynimi/calligraphy-grids/compare/v0.0.15...v0.0.16) (2024-07-27)
 
 
