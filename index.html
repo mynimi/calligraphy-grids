@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Preview</title>
+  </head>
+  <body>
+    <style>
+      .previews {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+      .previews--bigger {
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      }
+    </style>
+    <h1>Calligraphy Grids</h1>
+    <p>Try the Online Generator at <a href="https://code.halfapx.com/guideline-generator/">code.halfapx.com/guideline-generator/</a></p>
+    <h2>Types</h2>
+    <div data-previews-mini class="previews"></div>
+    <h2>Default Preview (shrunk down)</h2>
+    <div data-previews class="previews previews--bigger"></div>
+    <script type="module" src="/src/preview.ts"></script>
+  </body>
+</html>
