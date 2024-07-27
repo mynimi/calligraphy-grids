@@ -1,3 +1,10 @@
+## [0.0.14](https://github.com/mynimi/calligraphy-grids/compare/v0.0.13...v0.0.14) (2024-07-27)
+
+
+### Bug Fixes
+
+* **ci:** hope module will now work ([aa0d737](https://github.com/mynimi/calligraphy-grids/commit/aa0d73759764b11ca9239752becb48c97e20f59b))
+
 ## [0.0.13](https://github.com/mynimi/calligraphy-grids/compare/v0.0.12...v0.0.13) (2024-07-27)
 
 
