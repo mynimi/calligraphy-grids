@@ -1,3 +1,10 @@
+## [0.0.12](https://github.com/mynimi/calligraphy-grids/compare/v0.0.11...v0.0.12) (2024-07-27)
+
+
+### Bug Fixes
+
+* **dependency:** move semantic release into devDependencies ([2320637](https://github.com/mynimi/calligraphy-grids/commit/2320637ac153b4a529698e82a6213f6d4cfa2051))
+
 ## [0.0.11](https://github.com/mynimi/calligraphy-grids/compare/v0.0.10...v0.0.11) (2024-07-27)
 
 
