@@ -1,3 +1,10 @@
+## [0.0.7](https://github.com/mynimi/calligraphy-grids/compare/v0.0.6...v0.0.7) (2024-07-27)
+
+
+### Bug Fixes
+
+* **ci:** remove skip-ci ([12979ef](https://github.com/mynimi/calligraphy-grids/commit/12979ef821df556d0b4d4feff0935622f03bceb5))
+
 ## [0.0.6](https://github.com/mynimi/calligraphy-grids/compare/v0.0.5...v0.0.6) (2024-07-27)
 
 
