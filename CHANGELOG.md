@@ -1,3 +1,11 @@
+## [0.0.6](https://github.com/mynimi/calligraphy-grids/compare/v0.0.5...v0.0.6) (2024-07-27)
+
+
+### Bug Fixes
+
+* **ci:** separate publish from release ([8fccee1](https://github.com/mynimi/calligraphy-grids/commit/8fccee1ab78915548dbafbf9d4d8b537d7c9ba1e))
+* **publish:** see if publish works ([5cc9bda](https://github.com/mynimi/calligraphy-grids/commit/5cc9bda9bd9690ac0c8643bc56e17690c33820fb))
+
 ## [0.0.5](https://github.com/mynimi/calligraphy-grids/compare/v0.0.4...v0.0.5) (2024-07-27)
 
 
