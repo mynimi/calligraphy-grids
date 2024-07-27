@@ -1,3 +1,10 @@
+## [0.0.11](https://github.com/mynimi/calligraphy-grids/compare/v0.0.10...v0.0.11) (2024-07-27)
+
+
+### Bug Fixes
+
+* **ci:** ensure build is performed ([086e869](https://github.com/mynimi/calligraphy-grids/commit/086e869e6ff8409a7ec4a7d7a91a1757d53471b5))
+
 ## [0.0.10](https://github.com/mynimi/calligraphy-grids/compare/v0.0.9...v0.0.10) (2024-07-27)
 
 
