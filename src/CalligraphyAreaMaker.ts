@@ -226,10 +226,10 @@ export class CalligraphyAreaPage extends GridMaker {
       let trimmedY2 = y2;
 
       if (intersectionPoints.length >= 2) {
-        trimmedX1 = intersectionPoints[0].x;
-        trimmedY1 = intersectionPoints[0].y;
-        trimmedX2 = intersectionPoints[1].x;
-        trimmedY2 = intersectionPoints[1].y;
+        trimmedX1 = intersectionPoints[0]?.x ?? x1;
+        trimmedY1 = intersectionPoints[0]?.y ?? y1;
+        trimmedX2 = intersectionPoints[1]?.x ?? x2;
+        trimmedY2 = intersectionPoints[1]?.y ?? y2;
       }
 
       const trimmedLineLength = Math.sqrt(
