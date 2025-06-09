@@ -27,7 +27,7 @@ start with this in your HTML
 <div data-previews-mini></div>
 ```
 
-We will then render the Mini Previews with a modified version of the Defaults,
+We will then render the Mini Previews with a modified version of the defaults,
 and the regular ones with the defaults.
 
 The `makeSVG()` method creates a DOM Element, that can be appended to an element.
@@ -91,3 +91,16 @@ previewWrapper!.innerHTML += new CalligraphyAreaPage().makeSVGString();
 previewWrapper!.innerHTML += new DotGridPage().makeSVGString();
 previewWrapper!.innerHTML += new GraphGridPage().makeSVGString();
 ```
+
+### In Use
+There is a small demo-site with vite in the git project, `demo-site`
+
+run
+
+```console
+cd demo-site
+npm ci
+npm run dev
+```
+
+to see previews
