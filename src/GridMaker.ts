@@ -23,6 +23,16 @@ export interface GridPageTechnicalOptions {
   textLineHeight?: number;
 }
 
+export interface PathInfo {
+  key: string;
+  d: string;
+  id: string;
+  strokeWidth: number;
+  strokeDasharray?: string;
+  strokeLinecap?: string;
+  stroke?: string;
+}
+
 export type OutputType = 'dom' | 'string';
 
 export type RequiredFields<T> = { [K in keyof T]-?: T[K] };
@@ -213,7 +223,12 @@ export class GridMaker {
       `;
   }
 
-  protected createLinePathDefinition(x1: number, y1: number, x2: number, y2: number): string {
+  protected createLinePathDefinition(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+  ): string {
     return `M ${this.formatCoordinate(x1)} ${this.formatCoordinate(y1)} L ${this.formatCoordinate(x2)} ${this.formatCoordinate(y2)} `;
   }
 
@@ -301,6 +316,24 @@ export class GridMaker {
     return parseFloat(
       n.toFixed(this.#config.coordinateDecimalPlaceMax),
     ).toString();
+  }
+
+  protected initializePathInfo(
+    name: string,
+    stroke: string,
+    strokeWidth: number,
+    strokeDasharray?: string,
+    strokeLinecap?: string,
+  ): PathInfo {
+    return {
+      key: name,
+      d: '',
+      id: this.generateUniqueId(name),
+      stroke: stroke,
+      strokeWidth: strokeWidth,
+      strokeDasharray: strokeDasharray,
+      strokeLinecap: strokeLinecap,
+    };
   }
 
   protected generateUniqueId(baseId: string): string {

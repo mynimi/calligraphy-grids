@@ -1,5 +1,6 @@
 import {
   GridMaker,
+  PathInfo,
   type GridPageBasicOptions,
   type GridPageExtendedOptions,
   type GridPageTechnicalOptions,
@@ -30,16 +31,6 @@ export type CalligraphyLinePageTechOptions = GridPageTechnicalOptions;
 export type CalligraphyLinePageConfig = CalligraphyLinePageBasicOptions &
   CalligraphyLinePageExtendedOptions &
   CalligraphyLinePageTechOptions;
-
-interface PathInfo {
-  key: string;
-  d: string;
-  id: string;
-  strokeWidth: number;
-  strokeDasharray?: string;
-  strokeLinecap?: string;
-  stroke?: string;
-}
 
 export class CalligraphyLinePage extends GridMaker {
   #defaults: RequiredFields<CalligraphyLinePageConfig>;
@@ -305,23 +296,5 @@ export class CalligraphyLinePage extends GridMaker {
       default:
         return this.#config.gridStrokeWidth;
     }
-  }
-
-  private initializePathInfo(
-    name: string,
-    stroke: string,
-    strokeWidth: number,
-    strokeDasharray?: string,
-    strokeLinecap?: string,
-  ): PathInfo {
-    return {
-      key: name,
-      d: '',
-      id: this.generateUniqueId(name),
-      stroke: stroke,
-      strokeWidth: strokeWidth,
-      strokeDasharray: strokeDasharray,
-      strokeLinecap: strokeLinecap,
-    };
   }
 }
