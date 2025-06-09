@@ -1,5 +1,6 @@
 import {
   GridMaker,
+  IGridMaker,
   PathInfo,
   type GridPageBasicOptions,
   type GridPageExtendedOptions,
@@ -32,7 +33,23 @@ export type CalligraphyLinePageConfig = CalligraphyLinePageBasicOptions &
   CalligraphyLinePageExtendedOptions &
   CalligraphyLinePageTechOptions;
 
-export class CalligraphyLinePage extends GridMaker {
+export interface ICalligraphyLinePage extends IGridMaker {
+  calligraphyLineDefaultValues: RequiredFields<CalligraphyLinePageConfig>;
+  lineHeight: number;
+  xHeight: number;
+  ratio: {
+    ascender: number;
+    base: number;
+    descender: number;
+  };
+  normalizedRatio: {
+    ascender: number;
+    base: number;
+    descender: number;
+  };
+}
+
+export class CalligraphyLinePage extends GridMaker implements ICalligraphyLinePage {
   #defaults: RequiredFields<CalligraphyLinePageConfig>;
   #config: RequiredFields<CalligraphyLinePageConfig>;
   #prettyName: string;
@@ -185,10 +202,30 @@ export class CalligraphyLinePage extends GridMaker {
     const yBase = yX + base * xHeight;
     const yDesc = yBase + descender * xHeight;
 
-    const ascenderLine = this.createLinePathDefinition(lineStart, yAsc, lineEnd, yAsc);
-    const xHeightLine = this.createLinePathDefinition(lineStart, yX, lineEnd, yX);
-    const baseLine = this.createLinePathDefinition(lineStart, yBase, lineEnd, yBase);
-    const descenderLine = this.createLinePathDefinition(lineStart, yDesc, lineEnd, yDesc);
+    const ascenderLine = this.createLinePathDefinition(
+      lineStart,
+      yAsc,
+      lineEnd,
+      yAsc,
+    );
+    const xHeightLine = this.createLinePathDefinition(
+      lineStart,
+      yX,
+      lineEnd,
+      yX,
+    );
+    const baseLine = this.createLinePathDefinition(
+      lineStart,
+      yBase,
+      lineEnd,
+      yBase,
+    );
+    const descenderLine = this.createLinePathDefinition(
+      lineStart,
+      yDesc,
+      lineEnd,
+      yDesc,
+    );
 
     this.updatePathDeclaration('grid', ascenderLine);
     this.updatePathDeclaration('grid', xHeightLine);
@@ -259,7 +296,10 @@ export class CalligraphyLinePage extends GridMaker {
       const y1 = baseY;
       const x2 = x + dx;
       const y2 = baseY - height;
-      this.updatePathDeclaration('slant', this.createLinePathDefinition(x, y1, x2, y2));
+      this.updatePathDeclaration(
+        'slant',
+        this.createLinePathDefinition(x, y1, x2, y2),
+      );
     }
   }
 

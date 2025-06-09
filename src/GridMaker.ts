@@ -41,7 +41,14 @@ export type GridPageConfig = GridPageBasicOptions &
   GridPageExtendedOptions &
   GridPageTechnicalOptions;
 
-export class GridMaker {
+export interface IGridMaker {
+  prettyName: string;
+  fileName: string;
+  makeSVG(): SVGElement;
+  makeSVGString(addCloseTag?: boolean): string;
+}
+
+export class GridMaker implements IGridMaker {
   #defaults: RequiredFields<GridPageConfig>;
   #config: RequiredFields<GridPageConfig>;
   #prettyName: string = this.generateGridName('pretty');
@@ -55,65 +62,6 @@ export class GridMaker {
     '© grid code.halfapx.com/guideline-generator/';
   readonly #addCopyright: boolean = true;
   #maskId: string = '';
-
-  get maskId(): string {
-    return this.#maskId;
-  }
-
-  set maskId(id: string) {
-    this.#maskId = id;
-  }
-
-  get defaultValues(): RequiredFields<GridPageConfig> {
-    return this.#defaults;
-  }
-
-  get width(): number {
-    return this.#config.documentWidth;
-  }
-
-  get height(): number {
-    return this.#config.documentHeight;
-  }
-
-  private get textHeight(): number {
-    return (
-      this.#config.textFontSize * this.#config.textLineHeight + this.#textBuffer
-    );
-  }
-
-  get marginTop(): number {
-    return this.#config.addTitle
-      ? this.#config.documentMarginTop + this.textHeight
-      : this.#config.documentMarginTop;
-  }
-
-  get marginBottom(): number {
-    return this.#addCopyright
-      ? this.#config.documentMarginBottom +
-          this.textHeight * this.#copyrightSizeFactor
-      : this.#config.documentMarginBottom;
-  }
-
-  get marginLeft(): number {
-    return this.#config.documentMarginLeft;
-  }
-
-  get marginRight(): number {
-    return this.#config.documentMarginRight;
-  }
-
-  get gridWidth(): number {
-    return (
-      this.width -
-      this.#config.documentMarginLeft -
-      this.#config.documentMarginRight
-    );
-  }
-
-  get gridHeight(): number {
-    return this.height - this.marginTop - this.marginBottom;
-  }
 
   get prettyName(): string {
     return this.#prettyName;
@@ -129,6 +77,65 @@ export class GridMaker {
 
   set fileName(text: string) {
     this.#fileName = text;
+  }
+
+  protected get maskId(): string {
+    return this.#maskId;
+  }
+
+  protected set maskId(id: string) {
+    this.#maskId = id;
+  }
+
+  protected get defaultValues(): RequiredFields<GridPageConfig> {
+    return this.#defaults;
+  }
+
+  protected get width(): number {
+    return this.#config.documentWidth;
+  }
+
+  protected get height(): number {
+    return this.#config.documentHeight;
+  }
+
+  private get textHeight(): number {
+    return (
+      this.#config.textFontSize * this.#config.textLineHeight + this.#textBuffer
+    );
+  }
+
+  protected get marginTop(): number {
+    return this.#config.addTitle
+      ? this.#config.documentMarginTop + this.textHeight
+      : this.#config.documentMarginTop;
+  }
+
+  protected get marginBottom(): number {
+    return this.#addCopyright
+      ? this.#config.documentMarginBottom +
+          this.textHeight * this.#copyrightSizeFactor
+      : this.#config.documentMarginBottom;
+  }
+
+  protected get marginLeft(): number {
+    return this.#config.documentMarginLeft;
+  }
+
+  protected get marginRight(): number {
+    return this.#config.documentMarginRight;
+  }
+
+  protected get gridWidth(): number {
+    return (
+      this.width -
+      this.#config.documentMarginLeft -
+      this.#config.documentMarginRight
+    );
+  }
+
+  protected get gridHeight(): number {
+    return this.height - this.marginTop - this.marginBottom;
   }
 
   constructor(options: Partial<GridPageConfig> = {}) {
@@ -171,56 +178,17 @@ export class GridMaker {
     return svgString;
   }
 
-  addSVGContent(): string {
-    let string = '';
-    if (this.#addCopyright) {
-      string += this.addCopyright();
-    }
-    if (this.#config.addTitle) {
-      string += this.addTitle();
-    }
-    if (this.#config.addAreaBox) {
-      string += this.addMask();
-      string += this.addRectangle('transparent', this.#config.areaStrokeColor);
-    }
-    return string;
-  }
-
-  createGroup(className?: string, idName?: string, maskId?: string): string {
+  protected createGroup(
+    className?: string,
+    idName?: string,
+    maskId?: string,
+  ): string {
     return /*html*/ `
         <g 
           ${className ? `class="${className}"` : ''} 
           ${idName ? `id="${idName}"` : ''} 
           ${maskId ? `clip-path="url(#${maskId})"` : ''}
         >`;
-  }
-
-  addLine(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    color: string,
-    stroke: number,
-    srokeDashArray?: string,
-    strokeLineCap?: 'round' | 'square' | 'butt',
-  ): string {
-    const formatX1 = this.formatCoordinate(x1);
-    const formatX2 = this.formatCoordinate(x2);
-    const formatY1 = this.formatCoordinate(y1);
-    const formatY2 = this.formatCoordinate(y2);
-    return /*html*/ `
-        <line 
-          x1="${formatX1}" 
-          y1="${formatY1}" 
-          x2="${formatX2}" 
-          y2="${formatY2}" 
-          stroke="${color}" 
-          stroke-width="${stroke}"
-          ${srokeDashArray ? `stroke-dasharray="${srokeDashArray}"` : ''}
-          ${strokeLineCap ? `stroke-linecap="${strokeLineCap}"` : ''}
-        />
-      `;
   }
 
   protected createLinePathDefinition(
@@ -232,87 +200,7 @@ export class GridMaker {
     return `M ${this.formatCoordinate(x1)} ${this.formatCoordinate(y1)} L ${this.formatCoordinate(x2)} ${this.formatCoordinate(y2)} `;
   }
 
-  drawSolidLine(
-    orientation: 'horizontal' | 'vertical',
-    gridPos: number,
-    lineStart: number,
-    lineEnd: number,
-    color: string,
-    stroke: number,
-  ): string {
-    let x1 = 0,
-      x2 = 0,
-      y1 = 0,
-      y2 = 0;
-    if (orientation === 'horizontal') {
-      x1 = lineStart;
-      x2 = lineEnd;
-      y1 = y2 = gridPos;
-    }
-    if (orientation === 'vertical') {
-      y1 = lineStart;
-      y2 = lineEnd;
-      x1 = x2 = gridPos;
-    }
-
-    const line = this.addLine(x1, y1, x2, y2, color, stroke);
-    return line;
-  }
-
-  drawDashedLine(
-    orientation: 'horizontal' | 'vertical',
-    gridPos: number,
-    lineStart: number,
-    lineEnd: number,
-    dotRadius: number,
-    dotColor: string,
-  ): string {
-    const dotSize = dotRadius * 2;
-    const dotGap = dotRadius * 4;
-    let x1 = 0,
-      x2 = 0,
-      y1 = 0,
-      y2 = 0;
-    if (orientation === 'horizontal') {
-      x1 = lineStart;
-      x2 = lineEnd;
-      y1 = y2 = gridPos;
-    }
-    if (orientation === 'vertical') {
-      y1 = lineStart;
-      y2 = lineEnd;
-      x1 = x2 = gridPos;
-    }
-
-    return this.addLine(
-      x1,
-      y1,
-      x2,
-      y2,
-      dotColor,
-      dotSize,
-      `0,${dotGap.toString()}`,
-      'round',
-    );
-  }
-
-  drawSlantLine(
-    lineHeight: number,
-    angle: number,
-    xStart: number,
-    yStart: number,
-    color: string,
-    stroke: number,
-  ): string {
-    const xEnd = xStart + lineHeight / Math.tan((angle * Math.PI) / 180);
-    const yEnd = yStart - lineHeight;
-
-    const line = this.addLine(xStart, yStart, xEnd, yEnd, color, stroke);
-
-    return line;
-  }
-
-  formatCoordinate(n: number): string {
+  protected formatCoordinate(n: number): string {
     return parseFloat(
       n.toFixed(this.#config.coordinateDecimalPlaceMax),
     ).toString();
@@ -339,6 +227,21 @@ export class GridMaker {
   protected generateUniqueId(baseId: string): string {
     const uniqueIdSuffix = Math.random().toString(36).substr(2, 5); // Generating a random unique string
     return `${baseId}-${uniqueIdSuffix}`;
+  }
+
+  private addSVGContent(): string {
+    let string = '';
+    if (this.#addCopyright) {
+      string += this.addCopyright();
+    }
+    if (this.#config.addTitle) {
+      string += this.addTitle();
+    }
+    if (this.#config.addAreaBox) {
+      string += this.addMask();
+      string += this.addRectangle('transparent', this.#config.areaStrokeColor);
+    }
+    return string;
   }
 
   private addTitle(): string {
@@ -372,7 +275,7 @@ export class GridMaker {
     );
   }
 
-  protected generateGridName(type: 'pretty' | 'file'): string {
+  private generateGridName(type: 'pretty' | 'file'): string {
     const separator = type === 'pretty' ? ' ' : '_';
     const name = `grid${separator}page`;
     return `${name}`;

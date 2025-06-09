@@ -66,5 +66,3 @@ previewWrapper!.innerHTML += new CalligraphyLinePage().makeSVGString();
 previewWrapper!.innerHTML += new CalligraphyAreaPage().makeSVGString();
 previewWrapper!.innerHTML += new DotGridPage().makeSVGString();
 previewWrapper!.innerHTML += new GraphGridPage().makeSVGString();
-
-console.log(new CalligraphyLinePage().makeSVGString());

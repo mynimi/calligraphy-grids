@@ -1,5 +1,6 @@
 import {
   GridMaker,
+  IGridMaker,
   PathInfo,
   type GridPageBasicOptions,
   type GridPageExtendedOptions,
@@ -26,7 +27,11 @@ export type CalligraphyAreaPageConfig = CalligraphyAreaPageBasicOptions &
   CalligraphyAreaPageExtendedOptions &
   CalligraphyAreaPageTechOptions;
 
-export class CalligraphyAreaPage extends GridMaker {
+export interface ICalligraphyAreaPage extends IGridMaker {
+  calligraphyAreaDefaultValues: RequiredFields<CalligraphyAreaPageConfig>;
+}
+
+export class CalligraphyAreaPage extends GridMaker implements ICalligraphyAreaPage {
   #defaults: RequiredFields<CalligraphyAreaPageConfig>;
   #config: RequiredFields<CalligraphyAreaPageConfig>;
   #prettyName: string;

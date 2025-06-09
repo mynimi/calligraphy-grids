@@ -1,5 +1,6 @@
 import {
   GridMaker,
+  IGridMaker,
   type GridPageBasicOptions,
   type GridPageExtendedOptions,
   type GridPageTechnicalOptions,
@@ -21,7 +22,11 @@ export type DotGridPageConfig = DotGridPageBasicOptions &
   DotGridPageExtendedOptions &
   DotGridPageTechOptions;
 
-export class DotGridPage extends GridMaker {
+export interface IDotGridPage extends IGridMaker {
+  dotDefaultValues: RequiredFields<DotGridPageConfig>;
+}
+
+export class DotGridPage extends GridMaker implements IDotGridPage {
   #defaults: RequiredFields<DotGridPageConfig>;
   #config: RequiredFields<DotGridPageConfig>;
   #prettyName: string;

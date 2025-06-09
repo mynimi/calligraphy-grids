@@ -1,5 +1,6 @@
 import {
   GridMaker,
+  IGridMaker,
   type GridPageBasicOptions,
   type GridPageExtendedOptions,
   type GridPageTechnicalOptions,
@@ -21,7 +22,11 @@ export type GraphGridPageConfig = GraphGridPageBasicOptions &
   GraphGridPageExtendedOptions &
   GraphGridPageTechOptions;
 
-export class GraphGridPage extends GridMaker {
+export interface IGraphGridPage extends IGridMaker {
+  graphDefaultValues: RequiredFields<GraphGridPageConfig>;
+}
+
+export class GraphGridPage extends GridMaker implements IGraphGridPage {
   #defaults: RequiredFields<GraphGridPageConfig>;
   #config: RequiredFields<GraphGridPageConfig>;
   #prettyName: string;
