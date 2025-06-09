@@ -1,3 +1,15 @@
+# [1.0.0-beta.1](https://github.com/mynimi/calligraphy-grids/compare/v0.1.0...v1.0.0-beta.1) (2025-06-09)
+
+
+### Features
+
+* **output:** ensure cjs and esm are supported ([01d7f4d](https://github.com/mynimi/calligraphy-grids/commit/01d7f4de4ac16110e06abe4d0bce38cab178de7a))
+
+
+### BREAKING CHANGES
+
+* **output:** outputs are no longer directly in dist but dist/cjs or dist/esm respectively.
+
 # [0.1.0](https://github.com/mynimi/calligraphy-grids/compare/v0.0.16...v0.1.0) (2024-07-27)
 
 
