@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/mynimi/calligraphy-grids/compare/v1.0.0...v1.0.1) (2025-06-09)
+
+
+### Bug Fixes
+
+* **area:** fix parallel line logic ([0b1be47](https://github.com/mynimi/calligraphy-grids/commit/0b1be471d2c1f0f00e97770deb82230fbbaac69a))
+
 # [1.0.0](https://github.com/mynimi/calligraphy-grids/compare/v0.1.0...v1.0.0) (2025-06-09)
 
 
