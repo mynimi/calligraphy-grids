@@ -1,3 +1,10 @@
+# [1.0.0-beta.2](https://github.com/mynimi/calligraphy-grids/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2025-06-09)
+
+
+### Bug Fixes
+
+* **package:** make exports standard format ([508b8d8](https://github.com/mynimi/calligraphy-grids/commit/508b8d80ae1aa598e3051c7189442f93c7e36e69))
+
 # [1.0.0-beta.1](https://github.com/mynimi/calligraphy-grids/compare/v0.1.0...v1.0.0-beta.1) (2025-06-09)
 
 
