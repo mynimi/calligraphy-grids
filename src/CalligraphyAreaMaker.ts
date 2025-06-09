@@ -113,9 +113,6 @@ export class CalligraphyAreaPage
     const horizontalRemainder = this.gridHeight % xHeight;
     const lineStart = this.marginLeft;
     const lineEnd = this.width - this.marginRight;
-    const color = this.#config.lineColor;
-    const stroke = this.#config.gridStrokeWidth;
-    const dotSize = this.#config.gridStrokeWidth;
     const rectCenterX = this.marginLeft + this.gridWidth / 2;
     const rectCenterY = this.marginTop + this.gridHeight / 2;
     const rectDiagonal = Math.sqrt(
