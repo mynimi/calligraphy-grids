@@ -1,5 +1,7 @@
 import {
   GridMaker,
+  IGridMaker,
+  PathInfo,
   type GridPageBasicOptions,
   type GridPageExtendedOptions,
   type GridPageTechnicalOptions,
@@ -31,11 +33,29 @@ export type CalligraphyLinePageConfig = CalligraphyLinePageBasicOptions &
   CalligraphyLinePageExtendedOptions &
   CalligraphyLinePageTechOptions;
 
-export class CalligraphyLinePage extends GridMaker {
+export interface ICalligraphyLinePage extends IGridMaker {
+  calligraphyLineDefaultValues: RequiredFields<CalligraphyLinePageConfig>;
+  lineHeight: number;
+  xHeight: number;
+  ratio: {
+    ascender: number;
+    base: number;
+    descender: number;
+  };
+  normalizedRatio: {
+    ascender: number;
+    base: number;
+    descender: number;
+  };
+}
+
+export class CalligraphyLinePage extends GridMaker implements ICalligraphyLinePage {
   #defaults: RequiredFields<CalligraphyLinePageConfig>;
   #config: RequiredFields<CalligraphyLinePageConfig>;
   #prettyName: string;
   #fileName: string;
+  #pathEls = ['grid', 'slant', 'divider', 'baseLine', 'xHeightIndicator'];
+  #paths: PathInfo[] = [];
 
   get calligraphyLineDefaultValues(): RequiredFields<CalligraphyLinePageConfig> {
     return this.#defaults;
@@ -50,7 +70,7 @@ export class CalligraphyLinePage extends GridMaker {
     return this.#config.xHeight;
   }
 
-  get ratio(): { ascender: number; base: number; descender: number } {
+  get ratio() {
     return {
       ascender: this.#config.ratioAscender,
       base: this.#config.ratioBase,
@@ -58,12 +78,12 @@ export class CalligraphyLinePage extends GridMaker {
     };
   }
 
-  get normalizedRatio(): { ascender: number; base: number; descender: number } {
-    const normalizationFactor = 1 / this.#config.ratioBase;
+  get normalizedRatio() {
+    const factor = 1 / this.#config.ratioBase;
     return {
-      ascender: this.#config.ratioAscender * normalizationFactor,
+      ascender: this.#config.ratioAscender * factor,
       base: 1,
-      descender: this.#config.ratioDescender * normalizationFactor,
+      descender: this.#config.ratioDescender * factor,
     };
   }
 
@@ -99,6 +119,22 @@ export class CalligraphyLinePage extends GridMaker {
 
     super.fileName = this.#fileName;
     super.prettyName = this.#prettyName;
+
+    // Initialize paths with empty 'd' strings but style stuff
+    this.#pathEls.forEach((key) => {
+      const strokeWidth = this.getStrokeWidthForKey(key);
+      const strokeDasharray =
+        key === 'divider' ? `0, ${strokeWidth * 3}` : undefined;
+      const strokeLinecap = key === 'divider' ? 'round' : undefined;
+      const declaration: PathInfo = this.initializePathInfo(
+        key,
+        this.#config.lineColor,
+        strokeWidth,
+        strokeDasharray,
+        strokeLinecap,
+      );
+      this.#paths.push(declaration);
+    });
   }
 
   makeSVG(): SVGElement {
@@ -115,11 +151,6 @@ export class CalligraphyLinePage extends GridMaker {
   }
 
   private addCalligraphyLines(): string {
-    let gridParent = this.createGroup(
-      'grid',
-      'calli-grid',
-      this.maskId ? this.maskId : undefined,
-    );
     const buffer = this.#config.addAreaBox ? this.#config.areaBlockBuffer : 0;
     const height = this.gridHeight - buffer * 2;
     const lineReps = Math.floor(height / this.lineHeight);
@@ -127,165 +158,149 @@ export class CalligraphyLinePage extends GridMaker {
     let yLineStart = this.marginTop + buffer;
 
     for (let i = 0; i < lineReps; i++) {
-      const line = this.addCalligraphyLine(
+      this.generateCalligraphyLineDefinitions(
         yLineStart,
         this.marginLeft,
         this.width - this.marginRight,
       );
-      gridParent += line;
       yLineStart += this.lineHeight + lineGap;
     }
 
-    gridParent += '</g>';
+    let groupWrapper = this.createGroup(
+      'calligraphy-lines',
+      this.generateUniqueId('calli-lines'),
+      this.maskId ? this.maskId : undefined,
+    );
 
-    return gridParent;
+    this.#paths.forEach((pathObj) => {
+      if (pathObj.d.trim()) {
+        groupWrapper += `<path
+          d="${pathObj.d.trim()}"
+          id="${pathObj.id}"
+          stroke="${pathObj.stroke}"
+          stroke-width="${pathObj.strokeWidth}"
+          ${pathObj.strokeDasharray ? `stroke-dasharray="${pathObj.strokeDasharray}"` : ''}
+          ${pathObj.strokeLinecap ? `stroke-linecap="${pathObj.strokeLinecap}"` : ''}
+        />`;
+      }
+    });
+
+    groupWrapper += '</g>';
+    return groupWrapper;
   }
 
-  private addCalligraphyLine(
+  private generateCalligraphyLineDefinitions(
     gridPos: number,
     lineStart: number,
     lineEnd: number,
-  ): Element | string {
-    const {
-      ascender: normalizedAscender,
-      base: normalizedBase,
-      descender: normalizedDescender,
-    } = this.normalizedRatio;
-    const gridPosAscenderLine = gridPos;
-    const gridPosXHeightLine =
-      gridPosAscenderLine + this.xHeight * normalizedAscender;
-    const gridPosBaseLine = gridPosXHeightLine + this.xHeight * normalizedBase;
-    const gridPosDescenderLine =
-      gridPosBaseLine + this.xHeight * normalizedDescender;
+  ): void {
+    const { ascender, base, descender } = this.normalizedRatio;
+    const xHeight = this.xHeight;
 
-    let lineGroup = this.createGroup('line');
-    const ascender = this.addLineSection(
-      'ascender',
-      gridPosAscenderLine,
-      lineStart,
-      lineEnd,
-      'down',
-    );
-    lineGroup += ascender;
-    const base = this.addLineSection(
-      'base',
-      gridPosBaseLine,
-      lineStart,
-      lineEnd,
-      'up',
-    );
-    lineGroup += base;
-    const descender = this.addLineSection(
-      'descender',
-      gridPosDescenderLine,
-      lineStart,
-      lineEnd,
-      'up',
-    );
-    lineGroup += descender;
-    if (this.#config.slantAngle > 0) {
-      const slantLines = this.addSlantLines(gridPosDescenderLine, lineStart);
-      lineGroup += slantLines;
-    }
-    lineGroup += '</g>';
-    return lineGroup;
-  }
+    const yAsc = gridPos;
+    const yX = yAsc + ascender * xHeight;
+    const yBase = yX + base * xHeight;
+    const yDesc = yBase + descender * xHeight;
 
-  private addSlantLines(gridPos: number, lineStart: number): string {
-    let slantGroup = this.createGroup('slant-lines');
-    const reps = this.#config.slantLinesPerLine;
-    const endPosXFinalLine = this.gridWidth;
-    const startPosXFinalLine =
-      endPosXFinalLine -
-      this.lineHeight / Math.tan((this.#config.slantAngle * Math.PI) / 180);
-    const totalWidth = startPosXFinalLine;
-    const spaceBetweenRepetitions = totalWidth / (reps - 1);
-    let startPosX = lineStart;
-    for (let i = 0; i < reps; i++) {
-      const slantLine = this.drawSlantLine(
-        this.lineHeight,
-        this.#config.slantAngle,
-        startPosX,
-        gridPos,
-        this.#config.lineColor,
-        this.#config.gridStrokeWidth,
+    const ascenderLine = this.createLinePathDefinition(
+      lineStart,
+      yAsc,
+      lineEnd,
+      yAsc,
+    );
+    const xHeightLine = this.createLinePathDefinition(
+      lineStart,
+      yX,
+      lineEnd,
+      yX,
+    );
+    const baseLine = this.createLinePathDefinition(
+      lineStart,
+      yBase,
+      lineEnd,
+      yBase,
+    );
+    const descenderLine = this.createLinePathDefinition(
+      lineStart,
+      yDesc,
+      lineEnd,
+      yDesc,
+    );
+
+    this.updatePathDeclaration('grid', ascenderLine);
+    this.updatePathDeclaration('grid', xHeightLine);
+    this.updatePathDeclaration('baseLine', baseLine);
+    this.updatePathDeclaration('grid', descenderLine);
+
+    if (this.#config.showXHeightIndicator) {
+      const x = lineStart + this.#config.xHeightIndicatorStrokeWidth * 0.5;
+      this.updatePathDeclaration(
+        'xHeightIndicator',
+        this.createLinePathDefinition(x, yX, x, yBase),
       );
-      slantGroup += slantLine;
-      startPosX += spaceBetweenRepetitions;
     }
-    slantGroup += '</g>';
-    return slantGroup;
-  }
 
-  private addLineSection(
-    section: 'ascender' | 'base' | 'descender',
-    gridPosLine: number,
-    lineStart: number,
-    lineEnd: number,
-    dividerDrawingDirection: 'down' | 'up',
-  ): Element | string {
-    const ratios = this.ratio;
-    const dividerGap = this.xHeight / ratios['base'];
-    const ratio = ratios[section];
-    const color = this.#config.lineColor;
-    const stroke = this.#config.gridStrokeWidth;
-    let group = this.createGroup(section);
-    const gridPosXHeightLine = gridPosLine - this.xHeight;
-    const gridPos = section !== 'base' ? gridPosLine : gridPosXHeightLine;
-    const line1 = this.drawSolidLine(
-      'horizontal',
-      gridPos,
-      lineStart,
-      lineEnd,
-      color,
-      stroke,
-    );
-    group += line1;
-    /**
-     * the base section includes the x-Height Line (first solid line, and then additionally a thicker baseline)
-     * and optionally a vertical xHeight Indicator
-     */
-    if (section === 'base') {
-      const baseLine = this.drawSolidLine(
-        'horizontal',
-        gridPosLine,
-        lineStart,
-        lineEnd,
-        color,
-        this.#config.gridBaseLineStrokeWidth,
-      );
-      group += baseLine;
-      if (this.#config.showXHeightIndicator) {
-        const xHeightIndicator = this.drawSolidLine(
-          'vertical',
-          lineStart + this.#config.xHeightIndicatorStrokeWidth * 0.5,
-          gridPosXHeightLine,
-          gridPosLine,
-          color,
-          this.#config.xHeightIndicatorStrokeWidth,
-        );
-        group += xHeightIndicator;
-      }
-    }
     if (this.#config.addDividerLines) {
-      for (let i = 1; i < ratio; i++) {
-        const gap =
-          dividerDrawingDirection == 'down' ? dividerGap : dividerGap * -1;
-        const gridPos = gridPosLine + i * gap;
-        const dotRadius = this.#config.gridStrokeWidth;
-        const divider = this.drawDashedLine(
-          'horizontal',
-          gridPos,
-          lineStart,
-          lineEnd,
-          dotRadius,
-          color,
+      const baseRatio = this.ratio.base;
+      const ascRatio = this.ratio.ascender;
+      const descRatio = this.ratio.descender;
+      const dividerGapBase = xHeight / baseRatio;
+      const dividerGapAsc =
+        (xHeight * this.normalizedRatio.ascender) / ascRatio;
+      const dividerGapDesc =
+        (xHeight * this.normalizedRatio.descender) / descRatio;
+
+      // Base area dividers
+      for (let i = 1; i < baseRatio; i++) {
+        const y = yX + dividerGapBase * i;
+        this.updatePathDeclaration(
+          'divider',
+          this.createLinePathDefinition(lineStart, y, lineEnd, y),
         );
-        group += divider;
+      }
+
+      // Ascender area dividers
+      for (let i = 1; i < ascRatio; i++) {
+        const y = yAsc + dividerGapAsc * i;
+        this.updatePathDeclaration(
+          'divider',
+          this.createLinePathDefinition(lineStart, y, lineEnd, y),
+        );
+      }
+
+      // Descender area dividers
+      for (let i = 1; i < descRatio; i++) {
+        const y = yBase + dividerGapDesc * i;
+        this.updatePathDeclaration(
+          'divider',
+          this.createLinePathDefinition(lineStart, y, lineEnd, y),
+        );
       }
     }
-    group += '</g>';
-    return group;
+
+    if (this.#config.slantAngle > 0) {
+      this.addSlantLines(yDesc, lineStart);
+    }
+  }
+
+  private addSlantLines(baseY: number, lineStart: number): void {
+    const reps = this.#config.slantLinesPerLine;
+    const height = this.lineHeight;
+    const angleRad = (this.#config.slantAngle * Math.PI) / 180;
+    const dx = height / Math.tan(angleRad);
+    const totalWidth = this.gridWidth - dx;
+    const gap = totalWidth / (reps - 1);
+
+    for (let i = 0; i < reps; i++) {
+      const x = lineStart + i * gap;
+      const y1 = baseY;
+      const x2 = x + dx;
+      const y2 = baseY - height;
+      this.updatePathDeclaration(
+        'slant',
+        this.createLinePathDefinition(x, y1, x2, y2),
+      );
+    }
   }
 
   private generateName(type: 'pretty' | 'file'): string {
@@ -299,5 +314,27 @@ export class CalligraphyLinePage extends GridMaker {
     const xHeight = `${this.xHeight}mm`;
 
     return `${angle}${separator}${ratio}${separator}${xHeight}`;
+  }
+
+  private updatePathDeclaration(key: string, d: string) {
+    const pathObj = this.#paths.find((p) => p.key === key);
+    if (pathObj) {
+      pathObj.d += d;
+    } else {
+      console.warn(`Path declaration for key "${key}" not found.`);
+    }
+  }
+
+  private getStrokeWidthForKey(key: string): number {
+    switch (key) {
+      case 'xHeightIndicator':
+        return this.#config.xHeightIndicatorStrokeWidth;
+      case 'baseLine':
+        return this.#config.gridBaseLineStrokeWidth;
+      case 'divider':
+        return this.#config.gridStrokeWidth * 2;
+      default:
+        return this.#config.gridStrokeWidth;
+    }
   }
 }

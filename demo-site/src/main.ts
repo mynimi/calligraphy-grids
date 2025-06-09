@@ -26,6 +26,9 @@ const gridConfigShared: GridPageConfig = {
 const lineConfig: CalligraphyLinePageConfig = {
   ...gridConfigShared,
   xHeight: 4,
+  ratioAscender: 3,
+  ratioBase: 2,
+  ratioDescender: 3,
   areaBlockBuffer: 2,
 };
 
