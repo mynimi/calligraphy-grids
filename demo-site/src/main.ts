@@ -1,41 +1,14 @@
-# Calligraphy Grids
-Classes to create Calligraphy Grids.
+import './style.css'
+import {CalligraphyAreaPage, CalligraphyLinePage, DotGridPage, GraphGridPage, type CalligraphyAreaPageConfig, type CalligraphyLinePageConfig, type DotGridPageConfig, type GraphGridPageConfig, type GridPageConfig} from "../../src/index";
 
-[Online Version](https://code.halfapx.com/guideline-generator/) that combines
-it with a form and PDF Export, as well as a quick print style.
-
-## How to use
-
-### Install
-
-```console
-npm i --D calligraphy-grids
-```
-
-### Get SVG
-Depending on whether or not you have the document available, you'd implement
-it either as an SVG element, or via SVG string.
-
-There are Types for all the different Configs available.
-
-Docs on that are a WIP.
-
-start with this in your HTML
-
-```html
-<div data-previews></div>
-<div data-previews-mini></div>
-```
-
-We will then render the Mini Previews with a modified version of the Defaults,
-and the regular ones with the defaults.
-
-The `makeSVG()` method creates a DOM Element, that can be appended to an element.
-
-While `makeSVGString()` creates just a string that can then be added to an element as innerHTML.
-
-```ts
-import { CalligraphyAreaPage, CalligraphyLinePage, DotGridPage, GraphGridPage } from "calligraphy-grids";
+document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
+  <h1>Grid Maker</h1>
+  <h2>Previews in Action</h2>
+  <h3>Defaults:</h3>
+  <div data-previews></div>
+  <h3>Square Mini Previews:</h3>
+  <div data-previews-mini></div>
+`
 
 const gridConfigShared: GridPageConfig = {
   documentWidth: 40,
@@ -90,4 +63,3 @@ previewWrapper!.innerHTML += new CalligraphyLinePage().makeSVGString();
 previewWrapper!.innerHTML += new CalligraphyAreaPage().makeSVGString();
 previewWrapper!.innerHTML += new DotGridPage().makeSVGString();
 previewWrapper!.innerHTML += new GraphGridPage().makeSVGString();
-```
