@@ -26,6 +26,9 @@ const gridConfigShared: GridPageConfig = {
 const lineConfig: CalligraphyLinePageConfig = {
   ...gridConfigShared,
   xHeight: 4,
+  ratioAscender: 3,
+  ratioBase: 2,
+  ratioDescender: 3,
   areaBlockBuffer: 2,
 };
 
@@ -63,3 +66,5 @@ previewWrapper!.innerHTML += new CalligraphyLinePage().makeSVGString();
 previewWrapper!.innerHTML += new CalligraphyAreaPage().makeSVGString();
 previewWrapper!.innerHTML += new DotGridPage().makeSVGString();
 previewWrapper!.innerHTML += new GraphGridPage().makeSVGString();
+
+console.log(new CalligraphyLinePage().makeSVGString());

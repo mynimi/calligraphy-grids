@@ -213,6 +213,10 @@ export class GridMaker {
       `;
   }
 
+  protected createLinePathDefinition(x1: number, y1: number, x2: number, y2: number): string {
+    return `M ${this.formatCoordinate(x1)} ${this.formatCoordinate(y1)} L ${this.formatCoordinate(x2)} ${this.formatCoordinate(y2)} `;
+  }
+
   drawSolidLine(
     orientation: 'horizontal' | 'vertical',
     gridPos: number,
@@ -299,7 +303,7 @@ export class GridMaker {
     ).toString();
   }
 
-  private generateUniqueId(baseId: string): string {
+  protected generateUniqueId(baseId: string): string {
     const uniqueIdSuffix = Math.random().toString(36).substr(2, 5); // Generating a random unique string
     return `${baseId}-${uniqueIdSuffix}`;
   }
@@ -347,12 +351,14 @@ export class GridMaker {
       const viewBox = `0 0 ${this.width} ${this.height}`;
       svg.setAttribute('viewBox', viewBox);
       svg.setAttribute('id', this.generateUniqueId('grid-page'));
+      svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
       return svg;
     } else {
       const svgString = `
         <svg 
           viewBox="0 0 ${this.width} ${this.height}" 
           id="${this.generateUniqueId('grid-page')}"
+          xmlns="http://www.w3.org/2000/svg"
         >`;
       return svgString;
     }
