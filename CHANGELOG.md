@@ -1,3 +1,10 @@
+# [1.0.0-beta.3](https://github.com/mynimi/calligraphy-grids/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2025-06-09)
+
+
+### Bug Fixes
+
+* **build:** move to using tsup for build ([b2967ba](https://github.com/mynimi/calligraphy-grids/commit/b2967bad45cceb96c7e6a43b0361d8c402ceb329))
+
 # [1.0.0-beta.2](https://github.com/mynimi/calligraphy-grids/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2025-06-09)
 
 
