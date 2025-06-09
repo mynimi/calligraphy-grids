@@ -72,10 +72,26 @@ export class GraphGridPage extends GridMaker {
     const cellSize = this.#config.cellSize!;
     const xEnd = this.width - this.marginRight;
     const yEnd = this.height - this.marginBottom;
-    const horizontalReps = this.gridHeight / cellSize;
+    const horizontalReps = Math.floor(this.gridHeight / cellSize);
     const horizontalRemainder = this.gridHeight % cellSize;
-    const verticalReps = this.gridWidth / cellSize;
+    const verticalReps = Math.floor(this.gridWidth / cellSize);
     const verticalRemainder = this.gridWidth % cellSize;
+
+    let pathData = '';
+
+    // Horizontal lines
+    let yLineStart = this.marginTop + horizontalRemainder / 2;
+    for (let i = 0; i <= horizontalReps; i++) {
+      pathData += `M${this.formatCoordinate(this.marginLeft)} ${this.formatCoordinate(yLineStart)} L${this.formatCoordinate(xEnd)} ${this.formatCoordinate(yLineStart)} `;
+      yLineStart += cellSize;
+    }
+
+    // Vertical lines
+    let xLineStart = this.marginLeft + verticalRemainder / 2;
+    for (let i = 0; i <= verticalReps; i++) {
+      pathData += `M${this.formatCoordinate(xLineStart)} ${this.formatCoordinate(this.marginTop)} L${this.formatCoordinate(xLineStart)} ${this.formatCoordinate(yEnd)} `;
+      xLineStart += cellSize;
+    }
 
     let gridParent = this.createGroup(
       'grid',
@@ -83,33 +99,7 @@ export class GraphGridPage extends GridMaker {
       this.maskId ? this.maskId : undefined,
     );
 
-    let yLineStart = this.marginTop + horizontalRemainder / 2;
-    for (let i = 0; i <= horizontalReps; i++) {
-      const line = this.drawSolidLine(
-        'horizontal',
-        yLineStart,
-        this.marginLeft,
-        xEnd,
-        this.#config.lineColor,
-        this.#config.gridStrokeWidth,
-      );
-      yLineStart += cellSize;
-      gridParent += line;
-    }
-
-    let xLineStart = this.marginLeft + verticalRemainder / 2;
-    for (let i = 0; i <= verticalReps; i++) {
-      const line = this.drawSolidLine(
-        'vertical',
-        xLineStart,
-        this.marginTop,
-        yEnd,
-        this.#config.lineColor,
-        this.#config.gridStrokeWidth,
-      );
-      xLineStart += cellSize;
-      gridParent += line;
-    }
+    gridParent += `<path d="${pathData.trim()}" stroke="${this.#config.lineColor!}" stroke-width="${this.#config.gridStrokeWidth}" fill="none" />`;
 
     gridParent += '</g>';
 
