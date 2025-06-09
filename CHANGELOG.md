@@ -1,3 +1,26 @@
+# [1.0.0](https://github.com/mynimi/calligraphy-grids/compare/v0.1.0...v1.0.0) (2025-06-09)
+
+
+### Bug Fixes
+
+* **build:** move to using tsup for build ([b2967ba](https://github.com/mynimi/calligraphy-grids/commit/b2967bad45cceb96c7e6a43b0361d8c402ceb329))
+* **package:** make exports standard format ([508b8d8](https://github.com/mynimi/calligraphy-grids/commit/508b8d80ae1aa598e3051c7189442f93c7e36e69))
+
+
+### Features
+
+* **calligraphy-area-makers:** move from lines to compound paths ([21ca855](https://github.com/mynimi/calligraphy-grids/commit/21ca85562fe7437904e9364e18a1f81a3c33702c))
+* **calligraphy-line-maker:** move from lines to compound paths ([2643ba1](https://github.com/mynimi/calligraphy-grids/commit/2643ba198954bfd57ee3e0378ba6ff05b8efbad5))
+* **dot-grid:** move from circles to compound path ([01d6137](https://github.com/mynimi/calligraphy-grids/commit/01d613708e7a41e4e161d91087036e6797fc6704))
+* **graph-grid:** move from lines to compound path ([4e5d08f](https://github.com/mynimi/calligraphy-grids/commit/4e5d08f712b44e850c1ba33d3c2aaf6462442a6b))
+* **output:** ensure cjs and esm are supported ([01d7f4d](https://github.com/mynimi/calligraphy-grids/commit/01d7f4de4ac16110e06abe4d0bce38cab178de7a))
+* **typescript:** add types to classes and protect stuff that should not be accessed outside ([3023875](https://github.com/mynimi/calligraphy-grids/commit/3023875254b7cc99b5fd777b0828e633426e5ae0))
+
+
+### BREAKING CHANGES
+
+* **output:** outputs are no longer directly in dist but dist/cjs or dist/esm respectively.
+
 # [0.1.0](https://github.com/mynimi/calligraphy-grids/compare/v0.0.16...v0.1.0) (2024-07-27)
 
 
