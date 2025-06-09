@@ -69,10 +69,12 @@ export class DotGridPage extends GridMaker {
 
   private addDotGrid(): string {
     const cellSize = this.#config.cellSize!;
-    const horizontalReps = this.gridHeight / cellSize;
+    const dotRadius = this.#config.dotSize! / 2;
+    const horizontalReps = Math.floor(this.gridHeight / cellSize);
     const horizontalRemainder = this.gridHeight % cellSize;
-    const verticalReps = this.gridWidth / cellSize;
+    const verticalReps = Math.floor(this.gridWidth / cellSize);
     const verticalRemainder = this.gridWidth % cellSize;
+
     const horizontalIntersections: number[] = [];
     const verticalIntersections: number[] = [];
 
@@ -88,21 +90,27 @@ export class DotGridPage extends GridMaker {
       xLineStart += cellSize;
     }
 
+    let pathData = '';
+
+    for (const y of horizontalIntersections) {
+      for (const x of verticalIntersections) {
+        pathData +=
+          `M${this.formatCoordinate(x)} ${this.formatCoordinate(y)}` +
+          `m-${dotRadius} 0 ` +
+          `a${dotRadius} ${dotRadius} 0 1 0 ${dotRadius * 2} 0 ` +
+          `a${dotRadius} ${dotRadius} 0 1 0 -${dotRadius * 2} 0 `;
+      }
+    }
+
     let gridParent = this.createGroup(
       'grid',
       'calli-grid',
       this.maskId ? this.maskId : undefined,
     );
 
-    for (const horizontalPoint of horizontalIntersections) {
-      for (const verticalPoint of verticalIntersections) {
-        const dot = `<circle cx="${this.formatCoordinate(verticalPoint)}" cy="${this.formatCoordinate(
-          horizontalPoint,
-        )}" r="${this.#config.dotSize! / 2}" fill="${this.#config.lineColor!}" />`;
-        gridParent += dot;
-      }
-    }
+    gridParent += `<path d="${pathData.trim()}" fill="${this.#config.lineColor!}" />`;
     gridParent += '</g>';
+
     return gridParent;
   }
 
