@@ -6,12 +6,12 @@
     "name": "Myriam Frisano",
     "url": "https://halfapx.com"
   },
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
-    "import": "./dist/esm/index.js",
-    "require": "./dist/cjs/index.js"
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.cjs"
   },
   "files": [
     "dist/**/*",
@@ -30,9 +30,7 @@
     "lint": "eslint src --ext .ts",
     "format": "prettier --write src/**/*",
     "check": "npm run lint && tsc --noEmit",
-    "build:cjs": "tsc --project tsconfig.cjs.json",
-    "build:esm": "tsc --project tsconfig.esm.json",
-    "build": "npm run build:cjs && npm run build:esm",
+    "build": "tsup src/index.ts --dts --format esm,cjs --out-dir dist --clean",
     "prepublishOnly": "npm run check && npm run build",
     "semantic-release": "semantic-release"
   },
@@ -47,6 +45,7 @@
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.3.3",
     "semantic-release": "^24.0.0",
+    "tsup": "^8.5.0",
     "typescript": "^5.5.4"
   }
 }
